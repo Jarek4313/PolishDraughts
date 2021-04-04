@@ -1,13 +1,13 @@
 package game;
 
-import game.field.Empty;
+import game.field.Field;
 import game.utils.GameConstValue;
 import game.utils.GameError;
 
 import java.util.Scanner;
 
 public class Game {
-    private Empty[][] chessBoard = new Empty[GameConstValue.numberOfFields.getValue()][GameConstValue.numberOfFields.getValue()];
+    private Field[][] chessBoard = new Field[GameConstValue.numberOfFields.getValue()][GameConstValue.numberOfFields.getValue()];
     private Scanner scanner;
     private String input;
     private int options;
@@ -24,7 +24,7 @@ public class Game {
 
         for (int i = 0; i< chessBoard.length; i++) {
             for (int j = 0; j < chessBoard[i].length; j++) {
-                chessBoard[i][j] = new Empty(id);
+                chessBoard[i][j] = new Field(id);
                 id++;
             }
         }
