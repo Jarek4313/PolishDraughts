@@ -9,7 +9,7 @@ public enum MenuConstValue {
 
     private final int value;
 
-    MenuConstValue(int value) {
+    private MenuConstValue(int value) {
         this.value = value;
     }
 

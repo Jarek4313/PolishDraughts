@@ -35,7 +35,7 @@ public class Main {
 
         MenuConstValue menuOptions = MenuConstValue.defaultValue;
         boolean quitCondition = false;
-
+        boolean quitGameCondition = false;
         int options = 0;
 
         while(!quitCondition) {
@@ -43,12 +43,16 @@ public class Main {
             options = mainMenu.RunMenu();
 
             if (options == MenuConstValue.newGame.getValue()) {
-                System.out.println("GAME");
 
-                game.drawChessBoard();
+                while(!quitGameCondition) {
 
+                    game.drawChessBoard();
+                    game.runGame();
+                }
             }
         }
 
     }
 }
+
+//Kopiowanie tablicy Arrays.copyOf(tab, tab.length);

@@ -1,27 +1,36 @@
 package game;
 
-import game.field.Field;
+import game.field.Empty;
 import game.utils.GameConstValue;
+import game.utils.GameError;
 
-
+import java.util.Scanner;
 
 public class Game {
-    private Field[][] chessBoard = new Field[GameConstValue.numberOfFields.getValue()][GameConstValue.numberOfFields.getValue()];
+    private Empty[][] chessBoard = new Empty[GameConstValue.numberOfFields.getValue()][GameConstValue.numberOfFields.getValue()];
+    private Scanner scanner;
+    private String input;
+    private int options;
 
     public Game() {
-        for (int i = 0; i< chessBoard.length; i++) {
-            for (int j = 0; j < chessBoard[i].length; j++) {
-                chessBoard[i][j] = new Field();
-            }
-        }
+        scanner = new Scanner(System.in);
 
         this.initialChessBoard();
     }
 
     public void initialChessBoard() {
-        int id = 0;
+        int id = 1;
         int offSet = 0;
-        //this.chessBoard[0][0].setField("BLC");
+
+        for (int i = 0; i< chessBoard.length; i++) {
+            for (int j = 0; j < chessBoard[i].length; j++) {
+                chessBoard[i][j] = new Empty(id);
+                id++;
+            }
+        }
+        id = 0;
+
+
         for (int i = 0; i < this.chessBoard.length; i++) {
             for (int j = 0; j < this.chessBoard[i].length; j++) {
 
@@ -29,8 +38,6 @@ public class Game {
                     chessBoard[i][j].setField("BLC");
                 else
                     chessBoard[i][j].setField("WHI");
-
-
                 id++;
             }
             offSet++;
@@ -38,14 +45,60 @@ public class Game {
     }
 
     public void drawChessBoard() {
-
-
         for (int i = 0; i < chessBoard.length; i++) {
             for (int j = 0; j < chessBoard[i].length; j++) {
-                System.out.print(this.chessBoard[i][j].getField() + " ");
+                System.out.printf("%4s %2d ", this.chessBoard[i][j].getField(), this.chessBoard[i][j].getId());
             }
             System.out.println();
         }
+    }
+    private void validateTypeOptions() {
+        try {
+            this.options = Integer.parseInt(this.input);
+            GameError.errorOfType=true;
+        } catch (NumberFormatException e) {
+            System.out.println("Error - enter an integer value.");
+        }
+        GameError.errorOfType=false;
+    }
+    private boolean validateValueOptions() {
+        return true;
+    }
+    private void inputGameControl(GameConstValue gameConstValue) {
+        switch (gameConstValue) {
+            case pawnSelection:
+                input = scanner.nextLine();
+                this.validateTypeOptions();
+                break;
+            default:
+                System.out.println("Incorect input");
+        }
+    }
+    private void writeMessage(GameConstValue gameConstValue) {
+        switch(gameConstValue) {
+            case pawnSelection:
+                System.out.println("Wyznacz figurę: ");
+                break;
+            default:
+                System.out.println("Incorect input");
+        }
+    }
+
+    public void runGame() {
+
+
+            this.writeMessage(GameConstValue.pawnSelection);
+            this.inputGameControl(GameConstValue.pawnSelection);
+
+            if (GameError.errorOfType && GameError.errorOfValue) {
+                //jeśli nie ma błędu typu i wartości, gracz wyznacza figurę oraz teraz może wyznaczyć ruch
+            }
+
+            System.out.println(this.options);
+
+
+
+
     }
 
 }

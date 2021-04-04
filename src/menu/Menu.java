@@ -33,7 +33,7 @@ public class Menu<T extends SimpleItemMenu> {
         return tmpInput;
     }
 
-    private boolean validateTypeOptionsMenu() {
+    private boolean validateTypeOptions() {
         try {
             this.options = Integer.parseInt(this.input);
             return true;
@@ -44,7 +44,7 @@ public class Menu<T extends SimpleItemMenu> {
         return false;
     }
 
-    private boolean validateValueOptionsMenu() {
+    private boolean validateValueOptions() {
         if (this.options >= 1 && this.options < itemMenuList.size()) {
             return true;
         }
@@ -57,11 +57,11 @@ public class Menu<T extends SimpleItemMenu> {
 
         input = inputMenuOption();
 
-        if (! validateTypeOptionsMenu()) {
+        if (! validateTypeOptions()) {
             return MenuConstValue.error.getValue();
         }
 
-        if (! validateValueOptionsMenu()) {
+        if (! validateValueOptions()) {
             return MenuConstValue.error.getValue();
         }
         return this.options;
