@@ -31,7 +31,7 @@ public class Main {
 
         Menu mainMenu = new Menu(itemList);
         Game game = new Game();
-        game.initialChessBoard();
+
 
         MenuConstValue menuOptions = MenuConstValue.defaultValue;
         boolean quitCondition = false;

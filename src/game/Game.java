@@ -29,15 +29,19 @@ public class Game {
             }
         }
         id = 0;
-
-
         for (int i = 0; i < this.chessBoard.length; i++) {
             for (int j = 0; j < this.chessBoard[i].length; j++) {
-
-                if ((id+offSet) % 2 == 0)
-                    chessBoard[i][j].setField("BLC");
-                else
-                    chessBoard[i][j].setField("WHI");
+                if ((id + offSet) % 2 == 0) {
+                    if (id < 20) {
+                        chessBoard[i][j].setPawn(GameConstValue.pawnBlack);
+                    } else if (id >= 80 ) {
+                        chessBoard[i][j].setPawn(GameConstValue.pawnWhite);
+                    } else {
+                        chessBoard[i][j].setField("...");
+                    }
+                } else {
+                    chessBoard[i][j].setField("***");
+                }
                 id++;
             }
             offSet++;
@@ -47,10 +51,16 @@ public class Game {
     public void drawChessBoard() {
         for (int i = 0; i < chessBoard.length; i++) {
             for (int j = 0; j < chessBoard[i].length; j++) {
-                System.out.printf("%4s %2d ", this.chessBoard[i][j].getField(), this.chessBoard[i][j].getId());
+                if (chessBoard[i][j].getPawn() != null ) {
+                    System.out.printf("%s%2d%3d ", this.chessBoard[i][j].getPawnColor(), this.chessBoard[i][j].getPawnId(), this.chessBoard[i][j].getId());
+                } else {
+                    System.out.printf("%3s%3d ", this.chessBoard[i][j].getField(), this.chessBoard[i][j].getId());
+                }
+
             }
             System.out.println();
         }
+        //System.out.println(this.chessBoard[0][0].getPawnId());
     }
     private void validateTypeOptions() {
         try {
@@ -85,19 +95,13 @@ public class Game {
     }
 
     public void runGame() {
-
-
             this.writeMessage(GameConstValue.pawnSelection);
             this.inputGameControl(GameConstValue.pawnSelection);
 
             if (GameError.errorOfType && GameError.errorOfValue) {
                 //jeśli nie ma błędu typu i wartości, gracz wyznacza figurę oraz teraz może wyznaczyć ruch
             }
-
             System.out.println(this.options);
-
-
-
 
     }
 
