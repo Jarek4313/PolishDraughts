@@ -4,18 +4,35 @@ import game.field.Field;
 import game.utils.GameConstValue;
 import game.utils.GameError;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Game {
     private Field[][] chessBoard = new Field[GameConstValue.numberOfFields.getValue()][GameConstValue.numberOfFields.getValue()];
+    private ArrayList<Integer> whitePawns; //listy przechowujące id pionków obecnych na szachownicy,
+    private ArrayList<Integer> blackPawns; //gdy któryś zostanie strącony to zostanie też usunięty z tych list
+
     private Scanner scanner;
     private String input;
     private int options;
 
     public Game() {
         scanner = new Scanner(System.in);
-
+        whitePawns = new ArrayList<>();
+        blackPawns = new ArrayList<>();
         this.initialChessBoard();
+    }
+    private void addPawnToList(GameConstValue gameConstValue, int idPawn) {
+        switch (gameConstValue) {
+            case pawnBlack:
+                blackPawns.add(idPawn);
+                break;
+            case pawnWhite:
+                whitePawns.add(idPawn);
+                break;
+            default:
+                this.writeMessage(GameConstValue.errorAddPawnToList);
+        }
     }
 
     public void initialChessBoard() {
@@ -34,13 +51,15 @@ public class Game {
                 if ((id + offSet) % 2 == 0) {
                     if (id < 20) {
                         chessBoard[i][j].setPawn(GameConstValue.pawnBlack);
+                        this.addPawnToList(GameConstValue.pawnBlack, chessBoard[i][j].getPawn().getPawnId());
                     } else if (id >= 80 ) {
                         chessBoard[i][j].setPawn(GameConstValue.pawnWhite);
+                        this.addPawnToList(GameConstValue.pawnWhite, chessBoard[i][j].getPawn().getPawnId());
                     } else {
                         chessBoard[i][j].setField("...");
                     }
                 } else {
-                    chessBoard[i][j].setField("***");
+                    chessBoard[i][j].setField("---");
                 }
                 id++;
             }
@@ -89,12 +108,20 @@ public class Game {
             case pawnSelection:
                 System.out.println("Wyznacz figurę: ");
                 break;
+            case errorAddPawnToList:
+                System.out.println("Błąd dodania pionka do listy: ");
+                break;
+            case wirtePawnsList:
+                System.out.println("Black Pawns on board: " + blackPawns);
+                System.out.println("White Pawns on board: " + whitePawns);
+                break;
             default:
                 System.out.println("Incorect input");
         }
     }
 
     public void runGame() {
+            this.writeMessage(GameConstValue.wirtePawnsList);
             this.writeMessage(GameConstValue.pawnSelection);
             this.inputGameControl(GameConstValue.pawnSelection);
 
