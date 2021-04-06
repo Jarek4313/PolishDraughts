@@ -129,11 +129,12 @@ public class Game {
             for (int j = 0; j < this.chessBoard[i].length; j++) {
                 if ((id + offSet) % 2 == 0) {
 
-                    chessBoard[i][j].setField("...");
+                    chessBoard[i][j].setField("-------");
+
                     this.initalPawns(id, i, j);
                     this.fieldsChessboard.add(id);
                 } else {
-                    chessBoard[i][j].setField("---");
+                    chessBoard[i][j].setField("#######");
                 }
                 id++;
             }
@@ -143,17 +144,23 @@ public class Game {
 
     public void drawChessBoard() {
         for (int i = 0; i < chessBoard.length; i++) {
-            for (int j = 0; j < chessBoard[i].length; j++) {
-                if (chessBoard[i][j].getPawn() != null ) {
-                    System.out.printf("%s%2d%4s ", this.chessBoard[i][j].getPawnColor(), this.chessBoard[i][j].getPawnId(), "    ");
-                } else {
-                    System.out.printf("%3s%4s ", this.chessBoard[i][j].getField(), this.chessBoard[i][j].getStrId());
-                }
+            for (int q = 0; q<3; q++) {
+                for (int j = 0; j < chessBoard[i].length; j++) {
+                    if (chessBoard[i][j].getPawn() != null) {
+                        //pawn
+                        if ( q == 1) {
+                            System.out.printf("--" + "%s" + "%2d" + "--",this.chessBoard[i][j].getPawnColor(), this.chessBoard[i][j].getPawnId());
+                        } else {
+                            System.out.printf("%5s", this.chessBoard[i][j].getField());
+                        }
+                    } else {
+                        //field
 
+                        System.out.printf("%5s", this.chessBoard[i][j].getField());
+                    }
+                }System.out.println();
             }
-            System.out.println();
         }
-        //System.out.println(this.chessBoard[0][0].getPawnId());
     }
 
     private void writeMessage(GameConstValue gameConstValue) {

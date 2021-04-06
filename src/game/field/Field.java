@@ -10,7 +10,7 @@ public class Field {
 
     public Field(int id){
         this.id = id;
-        this.type = "DEF";
+        //this.type = "DEF";
     }
 
     public void setPawn(GameConstValue gameConstValue) {
