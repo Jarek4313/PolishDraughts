@@ -35,6 +35,13 @@ public class Field {
     }
 
     public int getId() {return this.id;}
+    public String getStrId() {
+        if ( this.type.equals("---") )
+            return "";
+        else
+            return String.valueOf(this.id);
+
+    }
     public void setId(int id) {this.id = id;}
 
 }
