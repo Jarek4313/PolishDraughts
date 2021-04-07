@@ -10,15 +10,18 @@ public class Field {
 
     public Field(int id){
         this.id = id;
-        //this.type = "DEF";
     }
 
     public void setPawn(GameConstValue gameConstValue) {
         this.pawn = new Pawn(gameConstValue);
-        //System.out.println(this.pawn.getPawnId());
     }
     public Pawn getPawn() {
         return this.pawn;
+    }
+    public Pawn getPawnWithId(int id) {
+        if (this.pawn.getPawnId() == id) {
+            return getPawn();
+        }
     }
     public String getPawnColor() {
         return pawn.getColor();

@@ -8,8 +8,10 @@ public enum GameConstValue {
     fieldSelection(21),
     pawnWhite(30),
     pawnBlack(40),
-    wirtePawnsList(50),
-    writeFieldLis(51);
+    writePawnsList(50),
+    writeFieldList(51),
+    whiteTurn(60),
+    blackTurn(61);
 
 
     private final int value;

@@ -28,5 +28,8 @@ public class Pawn{
     public int getPawnId() {return this.pawnId;}
     public String getColor() {return this.color;}
 
-
+    @Override
+    public String toString() {
+        return String.valueOf(this.pawnId);
+    }
 }
