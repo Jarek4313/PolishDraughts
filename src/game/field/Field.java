@@ -12,8 +12,8 @@ public class Field {
         this.id = id;
     }
 
-    public void setPawn(GameConstValue gameConstValue) {
-        this.pawn = new Pawn(gameConstValue);
+    public void setPawn(Pawn pawn) {
+        this.pawn = pawn;
     }
     public Pawn getPawn() {
         return this.pawn;
@@ -21,6 +21,8 @@ public class Field {
     public Pawn getPawnWithId(int id) {
         if (this.pawn.getPawnId() == id) {
             return getPawn();
+        } else {
+            return null;
         }
     }
     public String getPawnColor() {

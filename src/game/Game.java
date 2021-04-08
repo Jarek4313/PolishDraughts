@@ -17,7 +17,7 @@ public class Game {
     private Scanner scanner;
     private String input;
     private int options;
-    private Integer choosenPawn;
+    private Pawn actualPawn;
     private GameConstValue actualTurn;
 
     public Game() {
@@ -26,7 +26,7 @@ public class Game {
         blackPawns = new ArrayList<>();
         fieldsChessboard = new ArrayList<>();
         actualTurn = GameConstValue.whiteTurn;
-        choosenPawn = null;
+        actualPawn = null;
         this.initialChessBoard();
     }
 
@@ -74,6 +74,7 @@ public class Game {
         this.inputGameControl(GameConstValue.pawnSelection);
 
         if (GameError.errorOfType && GameError.errorOfValue) {
+            this.writeMessage(GameConstValue.writeActualPawn);
             this.inputGameControl(GameConstValue.fieldSelection);
         }
 
@@ -84,12 +85,15 @@ public class Game {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private void initalPawns(int id, int i, int j) {
+        Pawn pawn;
         if (id < 20) {
-            chessBoard[i][j].setPawn(GameConstValue.pawnBlack);
-            this.addPawnToList(GameConstValue.pawnBlack, chessBoard[i][j].getPawn());
+            pawn = new Pawn(GameConstValue.pawnBlack);
+            this.addPawnToList(GameConstValue.pawnBlack, pawn);
+            chessBoard[i][j].setPawn(pawn);
         } else if (id >= 80 ) {
-            chessBoard[i][j].setPawn(GameConstValue.pawnWhite);
-            this.addPawnToList(GameConstValue.pawnWhite, chessBoard[i][j].getPawn());
+            pawn = new Pawn(GameConstValue.pawnWhite);
+            this.addPawnToList(GameConstValue.pawnWhite, pawn);
+            chessBoard[i][j].setPawn(pawn);
         }
     }
 
@@ -102,9 +106,43 @@ public class Game {
             System.out.println("Error - enter an integer value.");
         }
     }
+    private ArrayList<Pawn> returnActualSetPawns() {
+        ArrayList<Pawn> tmpPawnList = null;
+        switch (actualTurn) {
+            case blackTurn:
+                tmpPawnList = blackPawns;
+                break;
+            case whiteTurn:
+                tmpPawnList = whitePawns;
+                break;
+            default:
+                writeMessage(GameConstValue.errorTurnOrChoosePawn);
+        }
+        return tmpPawnList;
+    }
+    private boolean validateValueOptionsofPawnId(int id) {
+        ArrayList<Pawn> actualPawnList = returnActualSetPawns();
+
+        for(Pawn p: actualPawnList) {
+            if (p.getPawnId() == id) {
+                return true;
+            }
+        }
+        return false;
+    }
+    private void setActualPawn(int pawnId) {
+        ArrayList<Pawn> actualPawnList = returnActualSetPawns();
+
+        for(Pawn p: actualPawnList) {
+            if (p.getPawnId() == pawnId) {
+                actualPawn = p;
+            }
+        }
+    }
     private void validateValueOptionsofPawn() {
-        if ( blackPawns.contains(this.options)) {///
+        if ( validateValueOptionsofPawnId(this.options)) {
             GameError.errorOfValue = true;
+            this.setActualPawn(this.options);
         } else {
             System.out.println("Error - you choose unidentfied pawn");
             GameError.errorOfValue = false;
@@ -198,6 +236,9 @@ public class Game {
             case errorRemovePawnFromList:
                 System.out.println("Błąd usunięcia pionka z listy: ");
                 break;
+            case errorTurnOrChoosePawn:
+                System.out.println("Błąd wyznaczenia pionka ");
+                break;
             case writePawnsList:
                 System.out.println("Black Pawns on board: " + blackPawns);
                 System.out.println("White Pawns on board: " + whitePawns);
@@ -205,6 +246,8 @@ public class Game {
             case writeFieldList:
                 System.out.println("Field list: " + fieldsChessboard);
                 break;
+            case writeActualPawn:
+                System.out.println("Actual pawn: " + actualPawn);
             case whiteTurn:
                 System.out.println("Actual turn: WHITE");
                 break;

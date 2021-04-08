@@ -3,6 +3,7 @@ package game.utils;
 public enum GameConstValue {
     errorAddPawnToList(1),
     errorRemovePawnFromList(2),
+    errorTurnOrChoosePawn(3),
     numberOfFields(10),
     pawnSelection(20),
     fieldSelection(21),
@@ -10,6 +11,7 @@ public enum GameConstValue {
     pawnBlack(40),
     writePawnsList(50),
     writeFieldList(51),
+    writeActualPawn(52),
     whiteTurn(60),
     blackTurn(61);
 

@@ -30,6 +30,6 @@ public class Pawn{
 
     @Override
     public String toString() {
-        return String.valueOf(this.pawnId);
+        return String.valueOf(this.color + " " + this.pawnId);
     }
 }
