@@ -13,20 +13,28 @@ public class Game {
     private ArrayList<Pawn> whitePawns; //listy przechowujące id pionków obecnych na szachownicy,
     private ArrayList<Pawn> blackPawns; //gdy któryś zostanie strącony to zostanie też usunięty z tych list
     private ArrayList<Integer> fieldsChessboard;
+    private ArrayList<Integer> freeFieldForPawnList;
 
     private Scanner scanner;
     private String input;
     private int options;
     private Pawn actualPawn;
+    //private Integer actualFieldId;
     private GameConstValue actualTurn;
+
+    private GameConstValue actualPlayerActivity;
 
     public Game() {
         scanner = new Scanner(System.in);
         whitePawns = new ArrayList<>();
         blackPawns = new ArrayList<>();
         fieldsChessboard = new ArrayList<>();
+        freeFieldForPawnList = new ArrayList<Integer>();
         actualTurn = GameConstValue.whiteTurn;
         actualPawn = null;
+
+
+
         this.initialChessBoard();
     }
 
@@ -55,31 +63,95 @@ public class Game {
         }
     }
 
+    private void movePawn() {
+        System.out.println(options);
+        int oldField = actualPawn.getFieldId();
+        for (int i = 0; i< chessBoard.length; i++) {
+            for (int j = 0; j < chessBoard[i].length; j++) {
+                if (chessBoard[i][j].getId() == options) {
+                    actualPawn.setFieldId(options);
+                    chessBoard[i][j].setPawn(actualPawn);
 
-
-    private void validateValueOptionsofField() {
-        //if
+                }
+                if (chessBoard[i][j].getId() == oldField) {
+                    chessBoard[i][j].setPawn(null);
+                }
+            }
+        }
+        actualPawn = null;
+        freeFieldForPawnList.clear();
     }
 
+    private void validateValueOptionsofField() {
+        System.out.println(freeFieldForPawnList);
+
+        if (freeFieldForPawnList.contains(options)) {
+            this.movePawn();
+        } else {
+            writeMessage(GameConstValue.errorChooseFreeField);
+        }
+    }
+    private void isEmptyField() {
+        for(Field row[]: this.chessBoard) {
+            for(Field f: row) {
+                //&& f.getPawn() != null
+                if (freeFieldForPawnList.contains(f.getId()) && f.getPawn() != null) {
+                    freeFieldForPawnList.remove(freeFieldForPawnList.indexOf(f.getId()));
+                }
+            }
+        }
+    }
+    private void setFreeFieldForPawn() {
+        //System.out.println(actualFieldId);
+
+        int row = (actualPawn.getFieldId()/10);
+        int col = actualPawn.getFieldId() % 10;
+        int id;
+        Integer nextRow;
+        //System.out.println("--->"+(row+col));ok
+        switch (actualTurn) {
+            case whiteTurn:
+                    nextRow = (row > 0) ? (--row)*10 : null;
+                    if (col >= 1 && col <= 8) {
+                        freeFieldForPawnList.add(nextRow + (col-1));
+                        freeFieldForPawnList.add(nextRow + (col+1));
+                    } else {
+                        freeFieldForPawnList.add(nextRow + ((col < 0) ? --col : ++col));
+                    }
+                    isEmptyField();
+                break;
+            case blackTurn:
+                break;
+            default:
+                writeMessage(GameConstValue.errorTurnOrChoosePawn);
+        }
+    }
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void runGame() {
         //tmp info
-        this.writeMessage(GameConstValue.writePawnsList);
-        this.writeMessage(GameConstValue.writeFieldList);
+        //this.writeMessage(GameConstValue.writePawnsList);
+        //this.writeMessage(GameConstValue.writeFieldList);
 
         this.writeMessage(actualTurn);
         this.writeMessage(GameConstValue.pawnSelection);
         this.inputGameControl(GameConstValue.pawnSelection);
 
-        if (GameError.errorOfType && GameError.errorOfValue) {
+        if (actualPawn != null) {
+
+            //this.actualPlayerActivity = GameConstValue.fieldSelection;
+
             this.writeMessage(GameConstValue.writeActualPawn);
+
+            this.setFreeFieldForPawn();
+
+            this.drawChessBoard();
+            this.writeMessage(GameConstValue.fieldSelection);
             this.inputGameControl(GameConstValue.fieldSelection);
         }
 
-        System.out.println(this.options);
-
+        //System.out.println(this.options);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -87,25 +159,34 @@ public class Game {
     private void initalPawns(int id, int i, int j) {
         Pawn pawn;
         if (id < 20) {
-            pawn = new Pawn(GameConstValue.pawnBlack);
+            pawn = new Pawn(GameConstValue.pawnBlack, id);
             this.addPawnToList(GameConstValue.pawnBlack, pawn);
             chessBoard[i][j].setPawn(pawn);
-        } else if (id >= 80 ) {
-            pawn = new Pawn(GameConstValue.pawnWhite);
+        }
+//        else if (id >= 80 ) {
+//            pawn = new Pawn(GameConstValue.pawnWhite);
+//            this.addPawnToList(GameConstValue.pawnWhite, pawn);
+//            chessBoard[i][j].setPawn(pawn);
+//        }
+        if (id == 82 || id == 73 || id == 71 || id == 64 ) {
+            pawn = new Pawn(GameConstValue.pawnWhite, id);
             this.addPawnToList(GameConstValue.pawnWhite, pawn);
             chessBoard[i][j].setPawn(pawn);
         }
     }
 
+    //sprawdzanie typu
     private void validateTypeOptions() {
         try {
             this.options = Integer.parseInt(this.input);
-            GameError.errorOfType=true;
+            //GameError.errorOfType=true;
         } catch (NumberFormatException e) {
-            GameError.errorOfType=false;
+            //GameError.errorOfType=false;
             System.out.println("Error - enter an integer value.");
         }
     }
+
+    //Zwraca aktualną grupę pionków, wedle tury
     private ArrayList<Pawn> returnActualSetPawns() {
         ArrayList<Pawn> tmpPawnList = null;
         switch (actualTurn) {
@@ -120,7 +201,11 @@ public class Game {
         }
         return tmpPawnList;
     }
+
+    //"""Funkcja sprawdza czy podana wartość/wybrany przez gracza pionek
+    // znajduje się w liście/rejestrze."""
     private boolean validateValueOptionsofPawnId(int id) {
+
         ArrayList<Pawn> actualPawnList = returnActualSetPawns();
 
         for(Pawn p: actualPawnList) {
@@ -130,6 +215,8 @@ public class Game {
         }
         return false;
     }
+
+    //po wybraniu dostępnego pionka, jego instancja jest wiązana z zmienną actualPawn
     private void setActualPawn(int pawnId) {
         ArrayList<Pawn> actualPawnList = returnActualSetPawns();
 
@@ -139,6 +226,7 @@ public class Game {
             }
         }
     }
+
     private void validateValueOptionsofPawn() {
         if ( validateValueOptionsofPawnId(this.options)) {
             GameError.errorOfValue = true;
@@ -148,6 +236,7 @@ public class Game {
             GameError.errorOfValue = false;
         }
     }
+
     private void inputGameControl(GameConstValue gameConstValue) {
         switch (gameConstValue) {
             case pawnSelection:
@@ -163,9 +252,8 @@ public class Game {
                 System.out.println("Incorect input");
         }
     }
-
     public void initialChessBoard() {
-        int id = 1;
+        int id = 0;
         int offSet = 0;
 
         for (int i = 0; i< chessBoard.length; i++) {
@@ -203,22 +291,33 @@ public class Game {
             return "--";
         }
     }
+
     public void drawChessBoard() {
         for (int i = 0; i < chessBoard.length; i++) {
             for (int q = 0; q<3; q++) {
                 for (int j = 0; j < chessBoard[i].length; j++) {
-                    if (chessBoard[i][j].getPawn() != null) {
-                        //pawn
-                        if ( q == 1) {
-
-                            System.out.printf("--" + "%s" + "%2s" + "--",this.chessBoard[i][j].getPawnColor(),this.actualTurnPawnId(this.chessBoard[i][j]));
+                    Pawn pawn = chessBoard[i][j].getPawn();
+                    if (pawn != null) {
+                        if ( pawn == actualPawn) {
+                            if (q == 0 || q == 2) {
+                                System.out.printf("-*****-");
+                            } else {
+                                System.out.printf("-*" + "%s" + "%2s" + "*-",this.chessBoard[i][j].getPawnColor(),this.actualTurnPawnId(this.chessBoard[i][j]));
+                            }
+                        } else {
+                            if ( q == 1) {
+                                System.out.printf("--" + "%s" + "%2s" + "--",this.chessBoard[i][j].getPawnColor(),this.actualTurnPawnId(this.chessBoard[i][j]));
+                            } else {
+                                System.out.printf("%5s", this.chessBoard[i][j].getField());
+                            }
+                        }
+                    } else {
+                        if (q == 1 && freeFieldForPawnList.contains(chessBoard[i][j].getId())){
+                            System.out.printf("---%2d--", this.chessBoard[i][j].getId());
                         } else {
                             System.out.printf("%5s", this.chessBoard[i][j].getField());
                         }
-                    } else {
-                        //field
 
-                        System.out.printf("%5s", this.chessBoard[i][j].getField());
                     }
                 }System.out.println();
             }
@@ -230,6 +329,9 @@ public class Game {
             case pawnSelection:
                 System.out.print("Wyznacz figurę: ");
                 break;
+            case fieldSelection:
+                System.out.print("Wyznacz pole dla figury: ");
+                break;
             case errorAddPawnToList:
                 System.out.println("Błąd dodania pionka do listy: ");
                 break;
@@ -238,6 +340,9 @@ public class Game {
                 break;
             case errorTurnOrChoosePawn:
                 System.out.println("Błąd wyznaczenia pionka ");
+                break;
+            case errorChooseFreeField:
+                System.out.println("Błąd wyboru wolnego pola! ");
                 break;
             case writePawnsList:
                 System.out.println("Black Pawns on board: " + blackPawns);
@@ -248,6 +353,7 @@ public class Game {
                 break;
             case writeActualPawn:
                 System.out.println("Actual pawn: " + actualPawn);
+                break;
             case whiteTurn:
                 System.out.println("Actual turn: WHITE");
                 break;
@@ -255,7 +361,7 @@ public class Game {
                 System.out.println("Actual turn: BLACK");
                 break;
             default:
-                System.out.println("Incorect input");
+                System.out.println("Incorect enum");
         }
     }
 

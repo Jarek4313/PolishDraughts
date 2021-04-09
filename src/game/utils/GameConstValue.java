@@ -4,6 +4,7 @@ public enum GameConstValue {
     errorAddPawnToList(1),
     errorRemovePawnFromList(2),
     errorTurnOrChoosePawn(3),
+    errorChooseFreeField(4),
     numberOfFields(10),
     pawnSelection(20),
     fieldSelection(21),

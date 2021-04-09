@@ -8,8 +8,9 @@ public class Pawn{
 
     private String color;
     private int pawnId;
+    private int fieldId;
 
-    public Pawn(GameConstValue gameConstValue) {
+    public Pawn(GameConstValue gameConstValue, int fieldId) {
        switch (gameConstValue) {
            case pawnWhite:
                this.color = "W";
@@ -24,12 +25,15 @@ public class Pawn{
            default:
                System.out.println("Incorect type of pawn");
        }
+       this.fieldId = fieldId;
     }
     public int getPawnId() {return this.pawnId;}
+    public int getFieldId() {return this.fieldId;}
+    public void setFieldId(int fieldId) { this.fieldId = fieldId;}
     public String getColor() {return this.color;}
 
     @Override
     public String toString() {
-        return String.valueOf(this.color + " " + this.pawnId);
+        return String.valueOf("Pawn: " + this.color + " " + this.pawnId + " " + fieldId);
     }
 }
